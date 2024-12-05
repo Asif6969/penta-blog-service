@@ -10,6 +10,7 @@ python = "^3.11"
 uvicorn = "^0.32.1"
 fastapi = "^0.115.6"
 sqlmodel = "^0.0.22"
+asyncpg = "^0.30.0"
 
 
 [build-system]
