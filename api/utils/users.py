@@ -51,6 +51,9 @@ async def update_user(db: AsyncSession, user_id: int, user_update: UserUpdate):
 
 # Delete user
 async def delete_user(db: AsyncSession, user_id: int):
+    existing_user = await db.execute(select(User).where(User.id == user_id))
+    if not existing_user.scalar_one_or_none():
+        return False
     query = delete(User).where(User.id == user_id)
     await db.execute(query)
     await db.commit()

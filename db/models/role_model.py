@@ -1,7 +1,7 @@
-from sqlalchemy.orm import Relationship
+from sqlalchemy.orm import relationship
 from sqlalchemy import Column, Integer, String, Text
 from db.db_setup import Base
-from user_model import User
+from db.models.user_model import User
 
 class Role(Base):
     __tablename__ = "roles"
@@ -10,4 +10,6 @@ class Role(Base):
     name = Column(String(255), nullable=False)
     description = Column(Text, nullable=False)
 
-    users = Relationship(User, back_populates="role")
+    users = relationship(User, back_populates="roles")
+
+# ERROR: circular import showing loop between user_model and role_model. Plan is to put table role into user.

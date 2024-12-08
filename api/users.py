@@ -1,10 +1,12 @@
-from typing import Optional, List
+from typing import List
 import fastapi
 from fastapi import Depends,HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from api.utils.users import get_user, get_users_by_username, get_users, create_user, delete_user, update_user
+from api.utils.posts import get_post_by_user
 from db.db_setup import async_get_db
 from pydantic_schema.user_schema import UserCreate, User, UserUpdate
+from pydantic_schema.post_schema import Post
 
 
 router = fastapi.APIRouter()
@@ -12,7 +14,7 @@ router = fastapi.APIRouter()
 # Find all users
 @router.get("/users", response_model=List[User])
 async def read_users(skip: int = 0, limit: int = 100, db: AsyncSession = Depends(async_get_db)):
-    users = await get_users(db, skip=skip, limit=limit)
+    users = await get_users(db=db, skip=skip, limit=limit)
     return users
 
 # Find user with ID
@@ -43,8 +45,17 @@ async def update_user_info(user_id: int, user_update: UserUpdate, db: AsyncSessi
     return updated_user
 
 # Delete a user
-@router.delete("/users/{id}")
-async def delete_user():
-    ...
+@router.delete("/users/{user_id}", status_code=204)
+async def delete_user_id(user_id: int, db: AsyncSession = Depends(async_get_db)):
+    success = await delete_user(db = db, user_id = user_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="User not found")
+    return
 
 # Get all post of a user
+@router.get("/users/{user_id}/posts", response_model=List[Post])
+async def read_user_post(user_id: int,skip: int = 0, limit: int = 100, db: AsyncSession = Depends(async_get_db)):
+    posts = await get_post_by_user(db = db, user_id= user_id, skip=skip, limit=limit)
+    if not posts:
+        raise HTTPException(status_code=404, detail="No posts found for this user")
+    return posts
