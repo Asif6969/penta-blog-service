@@ -1,7 +1,6 @@
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, Boolean, func
+from sqlalchemy import Column, Integer, String, Boolean
 from sqlalchemy.orm import relationship
 from db.db_setup import Base
-from post_model import Post
 
 class Category(Base):
     __tablename__ = "categories"
@@ -12,4 +11,4 @@ class Category(Base):
     is_deleted = Column(Boolean, default=False)  # Soft delete flag
 
     # Relationships
-    posts = relationship(Post, back_populates="category")
+    posts = relationship("Post", back_populates="category")

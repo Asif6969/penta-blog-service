@@ -2,8 +2,6 @@ from sqlalchemy import Column, Integer, String, Text, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 from .mixins import Timestamp
 from db.db_setup import Base
-from user_model import User
-from category_model import Category
 
 class Post(Base, Timestamp):
     __tablename__ = "posts"
@@ -16,5 +14,5 @@ class Post(Base, Timestamp):
     is_deleted = Column(Boolean, default=False)  # Soft delete flag
 
     # Relationships
-    users = relationship(User, back_populates="posts")
-    category = relationship(Category, back_populates="posts")
+    users = relationship("User", back_populates="posts")
+    category = relationship("Category", back_populates="posts")
