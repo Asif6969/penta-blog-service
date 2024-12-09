@@ -17,13 +17,3 @@ class User(Timestamp, Base):
     # Relationships
     role = relationship("Role", back_populates="users", uselist=False)
     post = relationship("Post", back_populates="users")
-
-
-# class Role(Base):
-#     __tablename__ = "roles"
-#
-#     id = Column(Integer, primary_key=True, index=True)
-#     name = Column(String(255), nullable=False)
-#     description = Column(Text, nullable=False)
-#
-#     users = relationship(User, back_populates="roles")
