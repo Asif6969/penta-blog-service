@@ -12,7 +12,7 @@ async def create_role(db: AsyncSession, role: RoleCreate):
     if db_role:
         return None  # Role already exists
 
-    new_role = Role(role_name=role.name, description=role.description)
+    new_role = Role(name=role.name, description=role.description)
     db.add(new_role)
     await db.commit()
     await db.refresh(new_role)
@@ -33,8 +33,7 @@ async def get_role_by_id(db: AsyncSession, role_id: int):
 
 # Update specific role
 async def update_role(db: AsyncSession, role_id: int, role_update = RoleUpdate):
-    query = select(Role).filter(Role.role_id == role_id)
-    result = await db.execute(select(Role).filter(Role.role_id == role_id))
+    result = await db.execute(select(Role).filter(Role.id == role_id))
     db_role = result.scalars().first()
     if not db_role:
         return None  # Role not found
@@ -53,7 +52,7 @@ async def assign_role_to_user(db: AsyncSession, user_id: int, role_id: int):
     result_user = await db.execute(select(User).filter(User.id == user_id))
     db_user = result_user.scalars().first()
 
-    result_role = await db.execute(select(Role).filter(Role.role_id == role_id))
+    result_role = await db.execute(select(Role).filter(Role.id == role_id))
     db_role = result_role.scalars().first()
 
     if not db_user or not db_role:

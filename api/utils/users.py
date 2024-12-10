@@ -24,7 +24,7 @@ async def get_users(db: AsyncSession, skip: int = 0, limit: int = 100):
 
 # Create a new user
 async def create_user(db: AsyncSession, user: UserCreate):
-    db_user = User(email=user.email, role=user.role)
+    db_user = User(name=user.name, email=user.email, username=user.username, phone=user.phone, role_id=user.role_id)
     db.add(db_user)
     await db.commit()
     await db.refresh(db_user)
@@ -57,3 +57,4 @@ async def delete_user(db: AsyncSession, user_id: int):
     query = delete(User).where(User.id == user_id)
     await db.execute(query)
     await db.commit()
+    return True

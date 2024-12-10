@@ -7,9 +7,9 @@ class CategoryBase(BaseModel):
     is_deleted: bool = False
 
 class CategoryUpdate(BaseModel):
-    name: Optional[str]
-    description: Optional[str]
-    is_deleted: Optional[bool] = False
+    name: Optional[str] = None
+    description: Optional[str] = None
+    is_deleted: Optional[bool] = None
 
 class CategoryCreate(CategoryBase):
     ...

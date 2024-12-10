@@ -7,12 +7,13 @@ class UserBase(BaseModel):
     email: str
     phone: str
     username: str
+    role_id: int
 
 class UserUpdate(BaseModel):
-    name: Optional[str] = None
-    email: Optional[str] = None
-    phone: Optional[str] = None
-    username: Optional[str] = None
+    name: Optional[str]
+    email: Optional[str]
+    phone: Optional[str]
+    username: Optional[str]
 
     class Config:
         orm_mode = True
@@ -22,7 +23,6 @@ class UserCreate(UserBase):
 
 class User(UserBase):
     id: int
-    role_id: int
     created_at: datetime
     updated_at: datetime
 

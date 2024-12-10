@@ -52,7 +52,7 @@ async def delete_user_id(user_id: int, db: AsyncSession = Depends(async_get_db))
     success = await delete_user(db = db, user_id = user_id)
     if not success:
         raise HTTPException(status_code=404, detail="User not found")
-    return
+    return {"detail": "User deleted successfully"}
 
 # Get all post of a user
 @router.get("/users/{user_id}/posts", response_model=List[Post])

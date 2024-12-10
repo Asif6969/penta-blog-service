@@ -76,9 +76,9 @@ async def update_post(db: AsyncSession, post_id: int, post_update: PostUpdate):
     await db.refresh(post)
     return post
 
-# (5)Soft deleting Post
-async def delete_post(db: AsyncSession, post_id: int):
-    query = select(Post).where(Post.id == post_id)
+# (5)Soft deleting Post via user id
+async def delete_post(db: AsyncSession, user_id: int):
+    query = select(Post).where(Post.user_id == user_id)
     result = await db.execute(query)
     post = result.scalar_one_or_none()
 
