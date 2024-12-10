@@ -1,12 +1,9 @@
 from fastapi import FastAPI
 from api import users, roles, post, category   # This connects the other files to this file
-from db.models import user_model, role_model, post_model, category_model
-from db.db_setup import async_engine
 
-user_model.Base.metadata.create_all(bind= async_engine)
-role_model.Base.metadata.create_all(bind= async_engine)
-post_model.Base.metadata.create_all(bind= async_engine)
-category_model.Base.metadata.create_all(bind= async_engine)
+# IMPORTANT: To run async api with alembic, need to use command:  alembic init -t async alembic
+# Allows the files to create tables for async while normal init creates for sync
+
 
 app = FastAPI(
     title="Penta Blog Service",

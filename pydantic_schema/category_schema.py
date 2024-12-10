@@ -14,7 +14,7 @@ class CategoryUpdate(BaseModel):
 class CategoryCreate(CategoryBase):
     ...
 
-class Category(CategoryBase):
+class CategorySchema(CategoryBase):
     id: int
 
     class Config:

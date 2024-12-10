@@ -26,7 +26,7 @@ async def get_roles(db: AsyncSession, skip: int = 0, limit: int = 100):
 
 # Get a specific role
 async def get_role_by_id(db: AsyncSession, role_id: int):
-    query = select(Role).filter(Role.role_id == role_id)
+    query = select(Role).filter(Role.id == role_id)
     result = await db.execute(query)
     db_role = result.scalars().first()
     return db_role

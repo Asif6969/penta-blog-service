@@ -1,5 +1,5 @@
 from db.models.category_model import Category
-from pydantic_schema.category_schema import Category, CategoryCreate, CategoryUpdate
+from pydantic_schema.category_schema import CategoryCreate, CategoryUpdate
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
@@ -18,7 +18,7 @@ async def create_category(db: AsyncSession, category_data: CategoryCreate):
 async def get_all_category(db: AsyncSession, skip: int=0, limit: int=100):
     query = select(Category).where(Category.is_deleted==False).offset(skip).limit(limit)
     result = await db.execute(query)
-    return result.scalar().all()
+    return result
 
 # Get a specific category
 async def get_category_by_id(db: AsyncSession, category_id: int):

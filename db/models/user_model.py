@@ -15,5 +15,5 @@ class User(Timestamp, Base):
     role_id = Column(Integer, ForeignKey("roles.id"), nullable=False)
 
     # Relationships
-    role = relationship("Role", back_populates="users", uselist=False)
-    post = relationship("Post", back_populates="users")
+    roles = relationship("Role", back_populates="users", uselist=False)
+    posts = relationship("Post", back_populates="users")

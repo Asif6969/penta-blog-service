@@ -12,3 +12,4 @@ class Role(Base):
     users = relationship("User", back_populates="roles")
 
 # ERROR: circular import showing loop between user_model and role_model. Plan is to put table role into user.
+# Fix: Avoid calling the classes without the " ". No need to import.
