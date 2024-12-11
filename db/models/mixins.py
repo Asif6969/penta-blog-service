@@ -5,7 +5,5 @@ from sqlalchemy.sql import func
 
 @declarative_mixin
 class Timestamp:
-    # created_at = Column(DateTime(timezone=True), default=datetime.now(timezone.utc), nullable=False)
-    # updated_at = Column(DateTime(timezone=True), default=datetime.now(timezone.utc), nullable=False)
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
