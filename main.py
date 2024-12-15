@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from api import users, roles, post, category   # This connects the other files to this file
+from api import users, roles, post, category, logins   # This connects the other files to this file
 
 # IMPORTANT: To run async api with alembic, need to use command:  alembic init -t async alembic
 # Allows the files to create tables for async while normal init creates for sync
@@ -19,3 +19,4 @@ app.include_router(users.router)
 app.include_router(roles.router)
 app.include_router(post.router)
 app.include_router(category.router)
+app.include_router(logins.router)
