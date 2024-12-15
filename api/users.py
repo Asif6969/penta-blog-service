@@ -7,12 +7,12 @@ from api.utils.posts import get_post_by_user
 from db.db_setup import async_get_db
 from pydantic_schema.user_schema import UserCreate, User, UserUpdate
 from pydantic_schema.post_schema import Post
+from api.utils.jwt_util import JWTBearer
 
-
-router = fastapi.APIRouter()
+router = fastapi.APIRouter(prefix="/Penta-blog/api")
 
 # Find all users
-@router.get("/users", response_model=List[User])
+@router.get("/users", response_model=List[User], dependencies=[Depends(JWTBearer())])
 async def read_users(skip: int = 0, limit: int = 100, db: AsyncSession = Depends(async_get_db)):
     users = await get_users(db=db, skip=skip, limit=limit)
     if users is None:
@@ -20,7 +20,7 @@ async def read_users(skip: int = 0, limit: int = 100, db: AsyncSession = Depends
     return users
 
 # Find user with ID
-@router.get("/users/{user_id}", response_model=User)
+@router.get("/users/{user_id}", response_model=User, dependencies=[Depends(JWTBearer())])
 async def read_user(user_id: int, db: AsyncSession = Depends(async_get_db)):
     db_user =  await get_user(db= db,user_id=user_id)
     if db_user is None:
@@ -28,7 +28,7 @@ async def read_user(user_id: int, db: AsyncSession = Depends(async_get_db)):
     return db_user
 
 # Create a new User
-@router.post("/users", response_model=User, status_code=201)
+@router.post("/users", response_model=User, status_code=201, dependencies=[Depends(JWTBearer())])
 async def create_new_user(user: UserCreate, db: AsyncSession = Depends(async_get_db)):
     db_user = await get_users_by_username(db=db, username=user.username)
     if db_user:
@@ -37,7 +37,7 @@ async def create_new_user(user: UserCreate, db: AsyncSession = Depends(async_get
     return new_user
 
 # Update a user
-@router.put("/users/{user_id}", response_model=User)
+@router.put("/users/{user_id}", response_model=User, dependencies=[Depends(JWTBearer())])
 async def update_user_info(user_id: int, user_update: UserUpdate, db: AsyncSession = Depends(async_get_db)):
     updated_user = await update_user(db=db, user_id=user_id, user_update=user_update)
 
@@ -47,7 +47,7 @@ async def update_user_info(user_id: int, user_update: UserUpdate, db: AsyncSessi
     return updated_user
 
 # Delete a user
-@router.delete("/users/{user_id}", status_code=204)
+@router.delete("/users/{user_id}", status_code=204, dependencies=[Depends(JWTBearer())])
 async def delete_user_id(user_id: int, db: AsyncSession = Depends(async_get_db)):
     success = await delete_user(db = db, user_id = user_id)
     if not success:
@@ -55,7 +55,7 @@ async def delete_user_id(user_id: int, db: AsyncSession = Depends(async_get_db))
     return {"detail": "User deleted successfully"}
 
 # Get all post of a user
-@router.get("/users/{user_id}/posts", response_model=List[Post])
+@router.get("/users/{user_id}/posts", response_model=List[Post], dependencies=[Depends(JWTBearer())])
 async def read_user_post(user_id: int,skip: int = 0, limit: int = 100, db: AsyncSession = Depends(async_get_db)):
     posts = await get_post_by_user(db = db, user_id= user_id, skip=skip, limit=limit)
     if not posts:

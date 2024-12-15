@@ -6,10 +6,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException
-from pydantic_schema.user_schema import TokenData
 
 # (1)Create a Post after checking if Category exist
-async def create_post(db: AsyncSession, posts: PostCreate, user: TokenData):
+async def create_post(db: AsyncSession, posts: PostCreate):
     # Check if category exists and is not deleted
     query = select(Category).where(Category.id == posts.category_id, Category.is_deleted == False)
     result = await db.execute(query)
@@ -17,12 +16,6 @@ async def create_post(db: AsyncSession, posts: PostCreate, user: TokenData):
 
     if not category:
         raise HTTPException(status_code=404, detail="Category not found or is deleted")
-
-    query = select(User).where(User.username == user.username)
-    result = await db.execute(query)
-    user = result.scalar_one_or_none()
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found or is deleted")
 
     db_post = Post(
         title = posts.title,
@@ -57,7 +50,7 @@ async def get_post_by_id(db: AsyncSession, post_id: int):
     return post
 
 # (4)Updating a post
-async def update_post(db: AsyncSession, post_id: int, post_update: PostUpdate, user: TokenData):
+async def update_post(db: AsyncSession, post_id: int, post_update: PostUpdate):
     query = select(Post).where(Post.id == post_id)
     result = await db.execute(query)
     post = result.scalar_one_or_none()
@@ -65,11 +58,6 @@ async def update_post(db: AsyncSession, post_id: int, post_update: PostUpdate, u
     if not post or post.is_deleted:
         raise HTTPException(status_code=404, detail="Post not found or is deleted")
 
-    query = select(User).where(User.username == user.username)
-    result = await db.execute(query)
-    user = result.scalar_one_or_none()
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found or is deleted")
 
     update_data = post_update.model_dump(exclude_unset=True)
 
