@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from api.utils.jwt_util import create_access_token, authenticate_user
 from db.db_setup import async_get_db
 
-router = APIRouter(prefix="/Penta-blog/api")
+router = APIRouter(prefix="/penta-blog/api")
 
 @router.post("/login", response_model=dict)
 async def login(

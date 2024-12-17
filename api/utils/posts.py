@@ -1,6 +1,5 @@
 from db.models.post_model import Post
 from db.models.category_model import Category
-from db.models.user_model import User
 from pydantic_schema.post_schema import PostCreate, PostUpdate
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
@@ -57,7 +56,6 @@ async def update_post(db: AsyncSession, post_id: int, post_update: PostUpdate):
 
     if not post or post.is_deleted:
         raise HTTPException(status_code=404, detail="Post not found or is deleted")
-
 
     update_data = post_update.model_dump(exclude_unset=True)
 

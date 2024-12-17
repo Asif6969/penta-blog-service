@@ -18,7 +18,7 @@ class UserBase(BaseModel):
     email: str
     phone: str
     username: str
-    role_id: int
+    role_id: Optional[int] = 2
 
 class UserUpdate(BaseModel):
     name: Optional[str] = None
