@@ -14,13 +14,14 @@ async def login(
     """
     Authenticate the user and return a JWT token.
     """
-    user = await authenticate_user(db, form_data.username, form_data.password)
-
-    if not user:
-        raise HTTPException(status_code=401, detail="Invalid username or password")
-
+    authenticated_user = await authenticate_user(db, form_data.username, form_data.password)
+    if not authenticated_user:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    user = authenticated_user["user"]
+    role_name = authenticated_user["role_name"]
     # Generate JWT token
-    token = create_access_token({"sub": user.username})
+    token_data = {"sub": user.username, "role": role_name}
+    token = create_access_token(data=token_data)
     return {"access_token": token, "token_type": "bearer"}
 
 @router.post("/logout")
