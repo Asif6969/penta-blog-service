@@ -16,6 +16,7 @@ app = FastAPI(
 )
 
 app.include_router(users.router)
+app.include_router(users.unsecure_router)
 app.include_router(roles.router)
 app.include_router(post.router)
 app.include_router(category.router)

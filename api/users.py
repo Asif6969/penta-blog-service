@@ -12,6 +12,7 @@ from infrastructure.security.Route_intercept import RouterInterceptor
 from starlette.requests import Request
 
 router = fastapi.APIRouter(prefix="/penta-blog/api", route_class=RouterInterceptor)
+unsecure_router = fastapi.APIRouter(prefix="/penta-blog/api")
 
 # Find all users
 @router.get("/users", response_model=List[User])
@@ -32,7 +33,7 @@ async def read_user(request: Request, user_id: int, db: AsyncSession = Depends(a
     return db_user
 
 # Create a new User
-@router.post("/users", response_model=User, status_code=201)
+@unsecure_router.post("/users", response_model=User, status_code=201)
 async def create_new_user(user: UserCreate, db: AsyncSession = Depends(async_get_db)):
     db_user = await get_users_by_username(db=db, username=user.username)
     if db_user:
