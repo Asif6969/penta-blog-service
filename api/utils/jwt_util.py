@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, timezone
 from fastapi.security import OAuth2PasswordBearer
-from jose import JWTError, jwt
+from jose import jwt
 from passlib.context import CryptContext
 from typing import Optional
 from db.db_setup import AsyncSession
@@ -35,62 +35,6 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     expire = datetime.now(timezone.utc) + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-
-# Verify JWT token
-# def verify_token(token: str):
-#     try:
-#         # Decode the token and validate expiration with `verify_exp`
-#         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM], options={"verify_exp": True})
-#         if not payload.get("sub"):
-#             raise HTTPException(
-#                 status_code=status.HTTP_401_UNAUTHORIZED,
-#                 detail="Missing subject in token",
-#                 headers={"WWW-Authenticate": "Bearer"},
-#             )
-#         return payload
-#     except JWTError as e:
-#         # Check for the specific error message related to expiration
-#         if "Signature has expired" in str(e):
-#             raise HTTPException(
-#                 status_code=status.HTTP_401_UNAUTHORIZED,
-#                 detail="Token has expired",
-#                 headers={"WWW-Authenticate": "Bearer"},
-#             )
-#         # Handle any other JWT-related errors
-#         raise HTTPException(
-#             status_code=status.HTTP_401_UNAUTHORIZED,
-#             detail="Invalid token",
-#             headers={"WWW-Authenticate": "Bearer"},
-#         )
-
-
-# async def get_current_user(db: AsyncSession = Depends(async_get_db), token: str = Depends(oauth2_scheme)):
-#     # Decode the token and extract the username (sub) from the payload
-#     payload = verify_token(token)
-#     username = payload.get("sub")
-#
-#     if not username:
-#         raise HTTPException(status_code=401, detail="Could not validate credentials")
-#
-#     # Query the user from the database
-#     result = await db.execute(select(User).filter_by(username=username))
-#     user = result.scalar_one_or_none()
-#
-#     if not user:
-#         raise HTTPException(status_code=401, detail="User not found")
-#
-#     # Fetch the role from the 'role' table using the role_id from the user
-#     role_result = await db.execute(select(Role).filter_by(id=user.role_id))
-#     role = role_result.scalar_one_or_none()
-#
-#     if not role:
-#         raise HTTPException(status_code=401, detail="Role not found")
-#
-#     # Return user data with the role name
-#     return {
-#         "username": user.username,
-#         "role": role.name  # Get the role name from the role table
-#     }
 
 # Verify login
 async def authenticate_user(db: AsyncSession, username: str, plain_password: str):
