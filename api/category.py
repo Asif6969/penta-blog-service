@@ -54,7 +54,7 @@ async def soft_delete_category_endpoint(request: Request, category_id: int, db: 
     return delete_category
 
 # Restore Soft delete
-@router.post("/categories/{category_id}")
+@router.put("/categories/{category_id}/restore", response_model=CategorySchema)
 @check_roles(["Admin","Moderator","User"])
 async def restore_category_endpoint(request: Request, category_id: int, db: AsyncSession = Depends(async_get_db)):
     restored_category = await restore_category(db, category_id)

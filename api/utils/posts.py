@@ -1,9 +1,10 @@
 from db.models.post_model import Post
 from db.models.category_model import Category
 from pydantic_schema.post_schema import PostCreate, PostUpdate
-from sqlalchemy.ext.asyncio import AsyncSession
+from db.db_setup import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import joinedload
 from fastapi import HTTPException
 
 # (1)Create a Post after checking if Category exist
@@ -33,7 +34,14 @@ async def create_post(db: AsyncSession, posts: PostCreate):
 
 # (2)Getting all the posts while checking soft delete
 async def get_active_posts(db: AsyncSession, skip: int = 0, limit: int = 100):
-    query = select(Post).where(Post.is_deleted == False).offset(skip).limit(limit)
+    query = (
+        select(Post)
+        .join(Category, Post.category_id == Category.id)
+        .where(Post.is_deleted == False, Category.is_deleted == False)
+        .options(joinedload(Post.category))
+        .offset(skip)
+        .limit(limit)
+    )
     result = await db.execute(query)
     return result.scalars().all()
 
@@ -87,11 +95,11 @@ async def delete_post(db: AsyncSession, user_id: int):
 
     post.is_deleted = True
     await db.commit()
-    return {"message": "Post soft-deleted successfully"}
+    return {"Message":f"Removed post of user {user_id}!"}
 
 # (6)Restore the Soft delete
-async def restore_post(db: AsyncSession, post_id: int):
-    query = select(Post).where(Post.id == post_id)
+async def restore_post(db: AsyncSession, user_id: int):
+    query = select(Post).where(Post.user_id == user_id)
     result = await db.execute(query)
     post = result.scalar_one_or_none()
 
@@ -100,7 +108,7 @@ async def restore_post(db: AsyncSession, post_id: int):
 
     post.is_deleted = False
     await db.commit()
-    return {"message": "Post restored successfully"}
+    return {"Message":f"Restored post of user {user_id}!"}
 
 
 # (7)Get post sorted by Category

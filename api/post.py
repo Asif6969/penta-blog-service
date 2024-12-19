@@ -43,17 +43,17 @@ async def create_new_post(request: Request, post: PostCreate, db: AsyncSession =
     return db_post
 
 # Soft delete
-@router.delete("/posts/{user_id}", response_model=Post)
+@router.delete("/posts/{user_id}", response_model=dict)
 @check_roles(["Admin","Moderator","User"])
-async def delete_post(request: Request, user_id: int, db: AsyncSession = Depends(async_get_db)):
+async def delete_post_temp(request: Request, user_id: int, db: AsyncSession = Depends(async_get_db)):
     post = await delete_post(db, user_id)
     return post
 
 # Restore soft delete
-@router.put("/posts/{post_id}/restore", response_model=Post)
+@router.put("/posts/{user_id}/restore", response_model=dict)
 @check_roles(["Admin","Moderator","User"])
-async def restore_soft_deleted_post(request: Request, post_id: int, db: AsyncSession = Depends(async_get_db)):
-    post = await restore_post(db, post_id)
+async def restore_soft_deleted_post(request: Request, user_id: int, db: AsyncSession = Depends(async_get_db)):
+    post = await restore_post(db, user_id)
     return post
 
 # Get the Posts using category

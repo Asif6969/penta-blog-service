@@ -49,7 +49,7 @@ async def update_role_endpoint(request: Request, role_id: int, role: RoleUpdate,
 
 # Assign a role to a user
 @router.put("/users/{user_id}/assign-role/{role_id}", response_model=User)
-@check_roles(["Admin","Moderator"])
+@check_roles(["Admin"])
 async def assign_role_to_user_endpoint(request: Request, user_id: int, role_id: int, db: AsyncSession = Depends(async_get_db)):
     user_with_role = await assign_role_to_user(db, user_id, role_id)
     if not user_with_role:

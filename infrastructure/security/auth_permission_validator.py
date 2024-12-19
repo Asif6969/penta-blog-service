@@ -1,3 +1,5 @@
+from urllib.request import Request
+
 from fastapi import HTTPException
 from starlette.status import HTTP_401_UNAUTHORIZED
 import jwt
@@ -6,7 +8,7 @@ SECRET_KEY = "1fd26fc70cb30cddcc77020a29a1c70db62ef9c6c5707b1a371237bff5a328b5"
 
 class AuthPermissionValidator:
     @staticmethod
-    async def validate_permission(request):
+    async def validate_permission(request: Request):
         auth_header = request.headers.get("Authorization")
         if not auth_header or not auth_header.startswith("Bearer "):
             raise HTTPException(
