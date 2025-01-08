@@ -2,6 +2,7 @@ from db.models.post_model import Post
 from db.models.category_model import Category
 from pydantic_schema.post_schema import PostCreate, PostUpdate
 from db.db_setup import AsyncSession
+from sqlalchemy import update, and_
 from sqlalchemy.future import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import joinedload
@@ -57,8 +58,8 @@ async def get_post_by_id(db: AsyncSession, post_id: int):
     return post
 
 # (4)Updating a post
-async def update_post(db: AsyncSession, post_id: int, post_update: PostUpdate):
-    query = select(Post).where(Post.id == post_id)
+async def update_post(db: AsyncSession, post_id: int, user_id: int, post_update: PostUpdate):
+    query = select(Post).where(and_(Post.id == post_id, Post.user_id == user_id))
     result = await db.execute(query)
     post = result.scalar_one_or_none()
 
@@ -85,30 +86,41 @@ async def update_post(db: AsyncSession, post_id: int, post_update: PostUpdate):
     return post
 
 # (5)Soft deleting Post via user id
-async def delete_post(db: AsyncSession, user_id: int):
-    query = select(Post).where(Post.user_id == user_id)
-    result = await db.execute(query)
-    post = result.scalar_one_or_none()
-
-    if not post or post.is_deleted:
-        raise HTTPException(status_code=404, detail="Post not found or is already deleted")
-
-    post.is_deleted = True
+async def delete_post(db, user_id: int):
+    # Query all posts for the user and mark them as deleted
+    stmt = (
+        update(Post)
+        .where(Post.user_id == user_id, Post.is_deleted == False)  # Add condition for non-deleted posts
+        .values(is_deleted=True)  # Soft delete (mark posts as deleted)
+        .execution_options(synchronize_session="fetch")
+    )
+    
+    # Execute the query and commit changes
+    result = await db.execute(stmt)
     await db.commit()
-    return {"Message":f"Removed post of user {user_id}!"}
+
+    if result.rowcount == 0:
+        raise HTTPException(status_code=404, detail="No posts found for the given user to delete")
+
+    return {"message": f"Soft deleted {result.rowcount} posts for user {user_id}"}
 
 # (6)Restore the Soft delete
-async def restore_post(db: AsyncSession, user_id: int):
-    query = select(Post).where(Post.user_id == user_id)
-    result = await db.execute(query)
-    post = result.scalar_one_or_none()
-
-    if not post or not post.is_deleted:
-        raise HTTPException(status_code=404, detail="Post not found or is not deleted")
-
-    post.is_deleted = False
+async def restore_post(db, user_id: int):
+    # Restore all soft-deleted posts for the user
+    stmt = (
+        update(Post)
+        .where(Post.user_id == user_id, Post.is_deleted == True)
+        .values(is_deleted=False)
+        .execution_options(synchronize_session="fetch")
+    )
+    
+    result = await db.execute(stmt)
     await db.commit()
-    return {"Message":f"Restored post of user {user_id}!"}
+
+    if result.rowcount == 0:
+        raise HTTPException(status_code=404, detail="No posts found to restore for the given user")
+
+    return {"message": f"Restored {result.rowcount} posts for user {user_id}"}
 
 
 # (7)Get post sorted by Category

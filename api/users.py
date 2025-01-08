@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from api.utils.users import get_user, get_users_by_username, get_users, create_user, delete_user, update_user
 from api.utils.posts import get_post_by_user
 from db.db_setup import async_get_db
-from pydantic_schema.user_schema import UserCreate, User, UserUpdate
+from pydantic_schema.user_schema import UserCreate, User, UserUpdate, UserRole
 from pydantic_schema.post_schema import Post
 from api.utils.jwt_util import check_roles
 from infrastructure.security.Route_intercept import RouterInterceptor
@@ -24,7 +24,7 @@ async def read_users(request: Request, skip: int = 0, limit: int = 100, db: Asyn
     return users
 
 # Find user with ID
-@router.get("/users/{user_id}", response_model=User)
+@router.get("/users/{user_id}", response_model=UserRole)
 @check_roles(required_roles=["Admin", "Moderator"])
 async def read_user(request: Request, user_id: int, db: AsyncSession = Depends(async_get_db)):
     db_user =  await get_user(db= db,user_id=user_id)
@@ -43,7 +43,7 @@ async def create_new_user(user: UserCreate, db: AsyncSession = Depends(async_get
 
 # Update a user
 @router.put("/users/{user_id}", response_model=User)
-@check_roles(required_roles=["User"])
+@check_roles(required_roles=["Admin","Moderator","User"])
 async def update_user_info(request: Request, user_id: int, user_update: UserUpdate, db: AsyncSession = Depends(async_get_db)):
     updated_user = await update_user(db=db, user_id=user_id, user_update=user_update)
 

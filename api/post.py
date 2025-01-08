@@ -29,10 +29,10 @@ async def get_post(request: Request, post_id: int, db: AsyncSession = Depends(as
     return post
 
 # Update a post
-@router.put("/posts/{post_id}", response_model=PostUp)
+@router.put("/posts/{post_id}/user/{user_id}", response_model=PostUp)
 @check_roles(["Admin","Moderator","User"])
-async def update_existing_post(request: Request, post_id: int, post_update: PostUpdate, db: AsyncSession = Depends(async_get_db)):
-    return await update_post(db, post_id, post_update)
+async def update_existing_post(request: Request, post_id: int, user_id: int, post_update: PostUpdate, db: AsyncSession = Depends(async_get_db)):
+    return await update_post(db, post_id, user_id, post_update)
 
 # Create a new post
 @router.post("/posts", response_model=Post, status_code=201)

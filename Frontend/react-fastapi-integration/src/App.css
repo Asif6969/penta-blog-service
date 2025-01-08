@@ -1,0 +1,211 @@
+/* src/styles.css */
+
+/* Home Page CSS */
+.home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 50px;
+}
+
+.home-container button {
+  padding: 10px 20px;
+  margin: 10px;
+  background-color: #4caf50;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 5px;
+}
+
+.home-container button:hover {
+  background-color: #45a049;
+}
+
+/* Register Page CSS */
+.register-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 50px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  max-width: 400px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.register-container form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.register-container input {
+  margin: 10px;
+  padding: 10px;
+  width: 250px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.register-container button {
+  padding: 10px 20px;
+  background-color: #4caf50;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 5px;
+}
+
+.register-container button:hover {
+  background-color: #45a049;
+}
+
+.register-container p {
+  color: red;
+}
+
+/* Global Styles */
+body {
+  font-family: Arial, sans-serif;
+  background: radial-gradient(circle, #ff7f50, #ffd700);
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+/* Container for the login form */
+.login-container {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  max-width: 400px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Form Title */
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: #333;
+}
+
+/* Form input fields */
+input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-sizing: border-box;
+  font-size: 16px;
+  color: black;
+  background-color: #eeeeee;
+}
+
+input:focus {
+  outline: none;
+  border-color: #4caf50;
+}
+
+/* Submit button */
+button {
+  width: 100%;
+  padding: 12px;
+  background-color: #4caf50;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+/* Error message */
+p {
+  color: #ff0000;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .login-container {
+    padding: 20px;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+}
+/* General Styling for List Items */
+li {
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #ccc; /* Adds border around list items */
+  border-radius: 5px; /* Rounds the corners */
+  background-color: #f9f9f9; /* Light background color */
+  color: black;
+  transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition for hover effects */
+  cursor: pointer; /* Makes it look clickable */
+}
+
+/* Hover Effect */
+li:hover {
+  background-color: #fff302; /* Changes background color on hover */
+  transform: scale(1.05); /* Slightly enlarges the item */
+}
+
+/* Active State (when clicked) */
+li:active {
+  background-color: #d32f2f;
+  transform: scale(0.98); /* Shrinks the item a bit when clicked */
+}
+
+.register-link {
+  margin-top: 10px;
+  text-align: center;
+  color: #555;
+}
+
+.register-now {
+  color: #007bff;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.register-now:hover {
+  color: #0056b3;
+}
+.login-link {
+  margin-top: 10px;
+  text-align: center;
+  color: #555;
+}
+
+.login-now {
+  color: #007bff;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.login-now:hover {
+  color: #0056b3;
+}

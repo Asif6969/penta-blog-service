@@ -20,7 +20,7 @@ async def login(
     user = authenticated_user["user"]
     role_name = authenticated_user["role_name"]
     # Generate JWT token
-    token_data = {"sub": user.username, "role": role_name}
+    token_data = {"sub": user.username, "id": user.id, "role": role_name}
     token = create_access_token(data=token_data)
     return {"access_token": token, "token_type": "bearer"}
 

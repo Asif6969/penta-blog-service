@@ -1,5 +1,6 @@
 from db.models.user_model import User
-from pydantic_schema.user_schema import UserCreate, UserUpdate
+from db.models.role_model import Role
+from pydantic_schema.user_schema import UserCreate, UserUpdate, UserRole
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import delete
@@ -7,9 +8,26 @@ from api.utils.jwt_util import hash_password
 
 # Get one user via id
 async def get_user(db: AsyncSession, user_id: int):
-    query = select(User).where(User.id == user_id)
+    query = (
+        select(User, Role)
+        .join(Role, User.role_id == Role.id)  # Join the roles table
+        .where(User.id == user_id)
+    )
     result = await db.execute(query)
-    return result.scalar_one_or_none()
+    data = result.one_or_none()
+    if data:
+        user, role = data
+        return UserRole(
+            name=user.name,
+            email=user.email,
+            phone=user.phone,
+            username=user.username,
+            role=role.name,
+            id=user.id,
+            created_at=user.created_at,
+            updated_at=user.updated_at,
+        )
+    return None
 
 # Get one user via username
 async def get_users_by_username(db: AsyncSession, username: str):
