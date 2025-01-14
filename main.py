@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from api import users, roles, post, category, logins   # This connects the other files to this file
+from api import users, roles, post, category, logins, tokens   # This connects the other files to this file
 from fastapi.middleware.cors import CORSMiddleware
 
 # IMPORTANT: To run async api with alembic, need to use command:  alembic init -t async alembic
@@ -22,7 +22,7 @@ origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -34,3 +34,5 @@ app.include_router(roles.router)
 app.include_router(post.router)
 app.include_router(category.router)
 app.include_router(logins.router)
+app.include_router(tokens.router)
+

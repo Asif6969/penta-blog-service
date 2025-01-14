@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, timezone
 from fastapi.security import OAuth2PasswordBearer
-from jose import jwt
+from jose import jwt, JWTError, ExpiredSignatureError
 from passlib.context import CryptContext
 from typing import Optional
 from db.db_setup import AsyncSession
@@ -16,6 +16,7 @@ from infrastructure.security.Route_intercept import AuthPermissionValidator
 SECRET_KEY = "1fd26fc70cb30cddcc77020a29a1c70db62ef9c6c5707b1a371237bff5a328b5"  # Use a secure key for production
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
+REFRESH_TOKEN_EXPIRE_DAYS = 30
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/Penta-blog/api/login")
 
@@ -29,7 +30,25 @@ def hash_password(password: str) -> str:
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
-# Create JWT token
+# Create JWT refresh token
+def create_refresh_token(user: dict):
+    to_encode = user.copy()
+    expire = datetime.now(timezone.utc) + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+
+def validate_refresh_token(refresh_token: str):
+    try:
+        # Decode the token
+        payload = jwt.decode(refresh_token, SECRET_KEY, algorithms=[ALGORITHM])
+        return payload  # Token is valid, return payload
+    except ExpiredSignatureError:
+        raise ValueError("The token has expired")
+    except JWTError:
+        raise ValueError("Invalid token")
+
+# Create JWT access token
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
     expire = datetime.now(timezone.utc) + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))

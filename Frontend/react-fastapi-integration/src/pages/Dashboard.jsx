@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import "../styles/Dashboard.css"; // Importing CSS for styling
+import apiClient from '../components/apiClient_axios';
+
 
 const Dashboard = () => {
   const [currentTab, setCurrentTab] = useState("welcome");
@@ -32,8 +33,8 @@ const Dashboard = () => {
 
     const fetchUserInfo = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8000/penta-blog/api/current-user",
+        const response = await apiClient.get(
+          "/current-user",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -57,8 +58,8 @@ const Dashboard = () => {
   const getAllUsers = async () => {
     const token = localStorage.getItem("token");
     try {
-      const response = await axios.get(
-        "http://localhost:8000/penta-blog/api/users",
+      const response = await apiClient.get(
+        "/users",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -80,8 +81,8 @@ const Dashboard = () => {
     }
 
     try {
-      const response = await axios.get(
-        `http://localhost:8000/penta-blog/api/users/${userId}`,
+      const response = await apiClient.get(
+        `/users/${userId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -113,8 +114,8 @@ const Dashboard = () => {
     }
 
     try {
-      const response = await axios.put(
-        `http://localhost:8000/penta-blog/api/users/${updateUserId}`,
+      const response = await apiClient.put(
+        `/users/${updateUserId}`,
         fieldsToUpdate, // Send only the updated fields
         {
           headers: {
@@ -137,8 +138,8 @@ const Dashboard = () => {
 
     try {
       // Send a delete request to the server
-      await axios.delete(
-        `http://localhost:8000/penta-blog/api/users/${userInfo.id}`,
+      await apiClient.delete(
+        `/users/${userInfo.id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

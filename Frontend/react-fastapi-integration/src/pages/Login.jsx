@@ -19,6 +19,7 @@ const Login = () => {
         new URLSearchParams({ username, password }).toString(),
         {
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          withCredentials: true,
         }
       );
       const { access_token } = response.data;

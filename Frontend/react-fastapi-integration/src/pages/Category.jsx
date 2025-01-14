@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import "../styles/Category.css";
+import apiClient from '../components/apiClient_axios';
 
 const Category = () => {
   const navigate = useNavigate();
@@ -31,7 +31,7 @@ const Category = () => {
     setError("");
 
     try {
-      const response = await axios.get(
+      const response = await apiClient.get(
         "http://localhost:8000/penta-blog/api/categories",
         {
           headers: {
@@ -66,7 +66,7 @@ const Category = () => {
     setSearchCategoryId(null);
 
     try {
-      const response = await axios.get(
+      const response = await apiClient.get(
         `http://localhost:8000/penta-blog/api/categories/${searchCategoryId}`,
         {
           headers: {
@@ -92,7 +92,7 @@ const Category = () => {
     setError("");
 
     try {
-      const response = await axios.delete(
+      const response = await apiClient.delete(
         `http://localhost:8000/penta-blog/api/categories/${softDeleteCategoryId}`,
         {
           headers: {
@@ -120,7 +120,7 @@ const Category = () => {
     setError("");
 
     try {
-      const response = await axios.put(
+      const response = await apiClient.put(
         `http://localhost:8000/penta-blog/api/categories/${softDeleteCategoryId}/restore`,
         {},
         {
@@ -148,7 +148,7 @@ const Category = () => {
     setError("");
 
     try {
-      const response = await axios.post(
+      const response = await apiClient.post(
         "http://localhost:8000/penta-blog/api/categories",
         { name, description },
         {
@@ -179,7 +179,7 @@ const Category = () => {
       if (categoryName) data.name = categoryName;
       if (categoryDescription) data.description = categoryDescription;
 
-      const response = await axios.put(
+      const response = await apiClient.put(
         `http://localhost:8000/penta-blog/api/categories/${categoryId}`,
         data,
         {

@@ -2,8 +2,9 @@
 
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import "../styles/Role.css";
+import apiClient from '../components/apiClient_axios';
+
 
 const Role = () => {
   const [roleId, setRoleId] = useState("");
@@ -28,7 +29,7 @@ const Role = () => {
   const fetchRoles = async () => {
     setLoading(true); // Set loading state to true when fetching data
     try {
-      const response = await axios.get(
+      const response = await apiClient.get(
         "http://localhost:8000/penta-blog/api/roles",
         {
           headers: {
@@ -57,7 +58,7 @@ const Role = () => {
     setSuccessMessage(""); // Clear any previous success messages
 
     try {
-      const response = await axios.post(
+      const response = await apiClient.post(
         "http://localhost:8000/penta-blog/api/roles",
         {
           name: roleName,
@@ -88,7 +89,7 @@ const Role = () => {
     setRole(null);
 
     try {
-      const response = await axios.get(
+      const response = await apiClient.get(
         `http://localhost:8000/penta-blog/api/roles/${roleId}`,
         {
           headers: {
@@ -115,7 +116,7 @@ const Role = () => {
       if (name) payload.name = name;
       if (description) payload.description = description;
 
-      const response = await axios.put(
+      const response = await apiClient.put(
         `http://localhost:8000/penta-blog/api/roles/${roleId}`,
         payload,
         {
@@ -142,7 +143,7 @@ const Role = () => {
     setErrorMessage("");
 
     try {
-      const response = await axios.put(
+      const response = await apiClient.put(
         `http://localhost:8000/penta-blog/api/users/${userId}/assign-role/${roleId}`,
         {},
         {

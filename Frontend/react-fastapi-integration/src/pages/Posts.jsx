@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../styles/Post.css";
+import apiClient from '../components/apiClient_axios';
+
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);
@@ -21,8 +22,8 @@ const Posts = () => {
 
   const fetchUserInfo = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:8000/penta-blog/api/current-user",
+      const response = await apiClient.get(
+        "/current-user",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -50,7 +51,7 @@ const Posts = () => {
     }
 
     try {
-      const response = await axios.get(
+      const response = await apiClient.get(
         "http://localhost:8000/penta-blog/api/posts",
         {
           headers: {
@@ -78,7 +79,7 @@ const Posts = () => {
     }
 
     try {
-      const response = await axios.delete(
+      const response = await apiClient.delete(
         `http://localhost:8000/penta-blog/api/posts/${userId}`,
         {
           headers: {
@@ -103,7 +104,7 @@ const Posts = () => {
 
     try {
       // Send the PUT request with the Authorization header and no body
-      const response = await axios.put(
+      const response = await apiClient.put(
         `http://localhost:8000/penta-blog/api/posts/${userId}/restore`,
         {}, // Empty object or no body needed
         {
@@ -122,7 +123,7 @@ const Posts = () => {
     setError(""); // Reset error
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(
+      const response = await apiClient.get(
         `http://localhost:8000/penta-blog/api/posts/${postId}`,
         {
           headers: {
@@ -150,7 +151,7 @@ const Posts = () => {
     }
 
     try {
-      const response = await axios.post(
+      const response = await apiClient.post(
         "http://localhost:8000/penta-blog/api/posts",
         {
           title,
@@ -182,7 +183,7 @@ const Posts = () => {
     }
 
     try {
-      const response = await axios.put(
+      const response = await apiClient.put(
         `http://localhost:8000/penta-blog/api/posts/${postId}/user/${userId}`,
         {
           ...(title && { title }), // Include title if provided
@@ -207,7 +208,7 @@ const Posts = () => {
     setError(""); // Reset the error message
     try {
       const token = localStorage.getItem("token"); // Get token from local storage
-      const response = await axios.get(
+      const response = await apiClient.get(
         `http://localhost:8000/penta-blog/api/posts/category/${categoryId}`,
         {
           headers: {
