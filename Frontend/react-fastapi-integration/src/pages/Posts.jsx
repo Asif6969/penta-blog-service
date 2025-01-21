@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/Post.css";
-import apiClient from '../components/apiClient_axios';
-
+//import "../styles/Post.css";
+import apiClient from "../components/apiClient_axios";
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);
@@ -22,14 +21,11 @@ const Posts = () => {
 
   const fetchUserInfo = async () => {
     try {
-      const response = await apiClient.get(
-        "/current-user",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await apiClient.get("/current-user", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setUserId(response.data.current_user.id);
       setLoading(false);
     } catch (err) {
@@ -230,238 +226,198 @@ const Posts = () => {
   // -----------------------------------------------------------------------------------------------------------
 
   return (
-    <div>
-      <div>
-        <h1>Blog Posts</h1>
-        <button className="back-button" onClick={handleBackToDashboard}>
-          Back to Dashboard
-        </button>
-
-        {/* Button to load all posts */}
-        <button onClick={fetchAllPosts}>Show All Posts</button>
-
-        {/* Display all posts if showAllPosts is true */}
-        <div className="posts-container">
+    <div className="min-h-screen bg-gray-100 p-6">
+      <nav className="bg-gray-800 text-white px-6 py-4 flex justify-between items-center shadow-md fixed top-0 left-0 w-full z-50">
+        <div className="flex items-center space-x-4">
+          <button
+            onClick={handleBackToDashboard}
+            className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded text-sm"
+          >
+            Back to Dashboard
+          </button>
+          <h1 className="text-xs sm:text-sm md:text-xl lg:text-2xl font-bold text-white text-center w-full sm:w-auto sm:flex-grow">
+            Blog Posts
+          </h1>
+        </div>
+      </nav>
+      <div className="max-w-7xl mx-auto space-y-12">
+        {/* Posts Container */}
+        <div className="pt-24 max-h-96 overflow-y-scroll border border-gray-300 p-4 rounded-lg mt-10 space-y-6">
+          {/* Button to load all posts */}
+          <button
+            onClick={fetchAllPosts}
+            className="bg-green-500 text-white py-2 px-4 rounded shadow hover:bg-green-600 ml-4"
+          >
+            Show All Posts
+          </button>
           {showAllPosts && posts.length > 0 ? (
             posts.map((post) => (
-              <div className="post-box" key={post.id}>
-                <h2 className="post-title">{post.title}</h2>
-                <p className="post-author">User ID: {post.user_id}</p>
-                <p className="post-category">Category ID: {post.category_id}</p>
-                <p className="post-content">{post.content}</p>
-                <p className="post-dates">
+              <div
+                key={post.id}
+                className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+              >
+                <h2 className="text-lg font-bold text-gray-800 mb-2">
+                  {post.title}
+                </h2>
+                <p className="text-sm text-gray-600 mb-2">
+                  <strong>User ID:</strong> {post.user_id}
+                </p>
+                <p className="text-sm text-gray-600 mb-2">
+                  <strong>Category ID:</strong> {post.category_id}
+                </p>
+                <p className="text-gray-700 mb-4">{post.content}</p>
+                <p className="text-xs text-gray-500">
                   <strong>Created At:</strong>{" "}
-                  {new Date(post.created_at).toLocaleString()} <br />
+                  {new Date(post.created_at).toLocaleString()}
+                </p>
+                <p className="text-xs text-gray-500">
                   <strong>Updated At:</strong>{" "}
                   {new Date(post.updated_at).toLocaleString()}
                 </p>
               </div>
             ))
           ) : (
-            <p>No posts available or click the button to load posts.</p>
+            <p className="text-center text-gray-600">
+              No posts available or click the button to load posts.
+            </p>
           )}
         </div>
-        <div>
-          <h1>Fetch Post by ID</h1>
 
-          {/* Input field to enter Post ID */}
+        {/* Fetch Post by ID Section */}
+        <div className="bg-white p-6 rounded-lg shadow-md space-y-4">
+          <h2 className="text-xl font-bold text-gray-800">Fetch Post by ID</h2>
           <input
             type="number"
             placeholder="Enter Post ID"
             value={postId}
             onChange={(e) => setPostId(e.target.value)}
+            className="border border-gray-300 p-2 rounded w-full"
           />
-          <button onClick={fetchPost} disabled={loading}>
+          <button
+            onClick={fetchPost}
+            disabled={loading}
+            className={`py-2 px-4 rounded shadow ${
+              loading ? "bg-gray-400" : "bg-green-500 hover:bg-green-600"
+            } text-white`}
+          >
             {loading ? "Loading..." : "Get Post"}
           </button>
 
-          {/* Display Post data if available */}
-          {post && !error && (
-            <div className="post-details">
-              <h2>{post.title}</h2>
-              <p>
-                <strong>Author:</strong> {post.user_id}
-              </p>
-              <p>
-                <strong>Category:</strong> {post.category_id}
-              </p>
-              <p>
-                <strong>Content:</strong> {post.content}
-              </p>
-              <p>
-                <strong>Created At:</strong>{" "}
-                {new Date(post.created_at).toLocaleString()}
-              </p>
-              <p>
-                <strong>Updated At:</strong>{" "}
-                {new Date(post.updated_at).toLocaleString()}
-              </p>
-            </div>
-          )}
+          <div className="mt-4">
+            {/* Display Error Message */}
+            {error && (
+              <div
+                className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                role="alert"
+              >
+                <span className="block sm:inline">{error}</span>
+              </div>
+            )}
 
-          {/* Display error message */}
-          {error && <p className="error">{error}</p>}
+            {post && !error && (
+              <div className="bg-gray-50 p-4 rounded shadow-sm">
+                <h3 className="text-lg font-bold">{post.title}</h3>
+                <p className="text-sm">
+                  <strong>Author:</strong> {post.user_id}
+                </p>
+                <p className="text-sm">
+                  <strong>Category:</strong> {post.category_id}
+                </p>
+                <p className="text-sm">
+                  <strong>Content:</strong> {post.content}
+                </p>
+              </div>
+            )}
+          </div>
         </div>
-        {/* Manage Posts by User */}
-        <h2>Manage Posts by User</h2>
 
-        {/* Form Section for Input and Buttons */}
-        <div className="form-section">
-          {/* Input for User ID */}
+        {/* Manage Posts by User */}
+        <div className="bg-white p-6 rounded-lg shadow-md space-y-4">
+          <h2 className="text-xl font-bold text-gray-800">
+            Manage Posts by User
+          </h2>
           <input
             type="text"
-            className="input-user-id"
             placeholder="Enter User ID"
             value={userId}
             onChange={(e) => setUserId(e.target.value)}
+            className="border border-gray-300 p-2 rounded w-full"
           />
-
-          {/* Soft Delete Button */}
-          <button className="soft-delete-btn" onClick={softDeletePost}>
-            Soft Delete Posts
-          </button>
-
-          {/* Restore Button */}
-          <button className="restore-btn" onClick={restorePost}>
-            Restore Posts
-          </button>
-
-          {/* Display Response Message */}
+          <div className="flex gap-4">
+            <button
+              onClick={softDeletePost}
+              className="bg-yellow-500 text-white py-2 px-4 rounded shadow hover:bg-yellow-600"
+            >
+              Soft Delete Posts
+            </button>
+            <button
+              onClick={restorePost}
+              className="bg-blue-500 text-white py-2 px-4 rounded shadow hover:bg-blue-600"
+            >
+              Restore Posts
+            </button>
+          </div>
           {responseMessage && (
-            <p className="response-message">{responseMessage}</p>
+            <p className="text-green-500">{responseMessage}</p>
           )}
         </div>
-        <div className="create-post-container">
-          <h1>Create a New Post</h1>
-          <div className="form-group">
-            <label htmlFor="title">Title:</label>
+
+        {/* Create Post Section */}
+        <div className="bg-white p-6 rounded-lg shadow-md space-y-4">
+          <h2 className="text-xl font-bold text-gray-800">Create a New Post</h2>
+          <div className="space-y-2">
+            <label htmlFor="title" className="block font-semibold">
+              Title:
+            </label>
             <input
               type="text"
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Enter post title"
+              className="border border-gray-300 p-2 rounded w-full"
             />
           </div>
-
-          <div className="form-group">
-            <label htmlFor="content">Content:</label>
+          <div className="space-y-2">
+            <label htmlFor="content" className="block font-semibold">
+              Content:
+            </label>
             <textarea
               id="content"
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="Enter post content"
+              className="border border-gray-300 p-2 rounded w-full"
             />
           </div>
-
-          <div className="form-group">
-            <label htmlFor="categoryId">
-              Category ID: 1 = Technology, 2 = Health
-            </label>
-            <input
-              type="number"
+          <div className="space-y-2">
+            {" "}
+            <label htmlFor="categoryId" className="block font-semibold">
+              {" "}
+              Category:{" "}
+            </label>{" "}
+            <select
               id="categoryId"
               value={categoryId}
               onChange={(e) => setCategoryId(e.target.value)}
-              placeholder="Enter category ID"
-            />
+              className="border border-gray-300 p-2 rounded w-full"
+            >
+              {" "}
+              <option value="">Select a category</option>{" "}
+              <option value="1">Technology</option>{" "}
+              <option value="2">Health</option>{" "}
+              <option value="3">Travel</option>{" "}
+            </select>{" "}
           </div>
-
-          <button className="submit-button" onClick={handleCreatePost}>
+          <button
+            onClick={handleCreatePost}
+            className="bg-green-500 text-white py-2 px-4 rounded shadow hover:bg-green-600"
+          >
             Create Post
           </button>
-
           {responseMessage && (
-            <p className="response-message">{responseMessage}</p>
+            <p className="text-green-500">{responseMessage}</p>
           )}
-        </div>
-        <div className="update-post-container">
-          <h1>Update Post</h1>
-          <p>Your User ID: {userId}</p>
-          <div>
-            <label htmlFor="postId">Post ID:</label>
-            <input
-              type="text"
-              id="postId"
-              value={postId}
-              onChange={(e) => setPostId(e.target.value)}
-              placeholder="Enter the post ID to update"
-            />
-          </div>
-          <div>
-            <label htmlFor="title">New Title (optional):</label>
-            <input
-              type="text"
-              id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Enter the new title"
-            />
-          </div>
-          <div>
-            <label htmlFor="content">New Content (optional):</label>
-            <textarea
-              id="content"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="Enter the new content"
-            />
-          </div>
-          <div>
-            <label htmlFor="categoryId">New Category ID (optional):</label>
-            <input
-              type="text"
-              id="categoryId"
-              value={categoryId}
-              onChange={(e) => setCategoryId(e.target.value)}
-              placeholder="Enter the new category ID"
-            />
-          </div>
-          <button onClick={updatePost}>Update Post</button>
-          {responseMessage && (
-            <p className="response-message">{responseMessage}</p>
-          )}
-          {error && <p className="error-message">{error}</p>}
-          {loading && <p className="loading-message">Loading user info...</p>}
-        </div>
-        <div className="category-posts-container">
-          <h1>Posts by Category</h1>
-
-          {/* Category input */}
-          <div>
-            <label htmlFor="categoryId">Enter Category ID:</label>
-            <input
-              type="number"
-              id="categoryId"
-              value={categoryId}
-              onChange={(e) => setCategoryId(e.target.value)}
-              placeholder="Enter category ID"
-            />
-          </div>
-
-          <button onClick={fetchPostsByCategory} disabled={loading}>
-            {loading ? "Loading..." : "Fetch Posts"}
-          </button>
-
-          {/* Error message */}
-          {error && <p className="error-message">{error}</p>}
-
-          {/* Display posts */}
-          <div className="posts-container">
-            {posts.length === 0 ? (
-              <p>No posts found for this category.</p>
-            ) : (
-              posts.map((post) => (
-                <div key={post.id} className="post-box">
-                  <h3>{post.title}</h3>
-                  <p>{post.content}</p>
-                  <p>
-                    <strong>Category ID:</strong> {post.category_id}
-                  </p>
-                </div>
-              ))
-            )}
-          </div>
         </div>
       </div>
     </div>

@@ -23,20 +23,28 @@ const Login = () => {
         }
       );
       const { access_token } = response.data;
-      localStorage.setItem("token", access_token);  // Save token in localStorage
+      localStorage.setItem("token", access_token); // Save token in localStorage
 
-      navigate("/dashboard");  // Navigate to dashboard on success
+      navigate("/dashboard"); // Navigate to dashboard on success
     } catch (err) {
       setError("Incorrect username or password.");
     }
   };
 
   return (
-    <div className="login-container">
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="username">Username:</label>
+    <div className="min-h-screen flex flex-col items-center justify-center p-4">
+      <h2 className="text-3xl font-bold text-gray-800 mb-6">Login</h2>
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md"
+      >
+        <div className="mb-4">
+          <label
+            htmlFor="username"
+            className="block text-gray-700 font-semibold mb-2"
+          >
+            Username:
+          </label>
           <input
             type="text"
             id="username"
@@ -44,10 +52,16 @@ const Login = () => {
             onChange={(e) => setUsername(e.target.value)}
             placeholder="Enter your username"
             required
+            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
           />
         </div>
-        <div className="form-group">
-          <label htmlFor="password">Password:</label>
+        <div className="mb-4">
+          <label
+            htmlFor="password"
+            className="block text-gray-700 font-semibold mb-2"
+          >
+            Password:
+          </label>
           <input
             type="password"
             id="password"
@@ -55,15 +69,23 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter your password"
             required
+            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
           />
         </div>
-        <button type="submit">Login</button>
+        <button
+          type="submit"
+          className="bg-purple-500 text-white font-semibold py-2 px-4 rounded hover:bg-purple-600 w-full"
+        >
+          Login
+        </button>
       </form>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {/* Register Link */}
-      <p className="register-link">
+      {error && <p className="text-red-500 mt-4">{error}</p>}
+      <p className="text-gray-700 mt-4">
         Don't have an account?{" "}
-        <span onClick={() => navigate("/register")} className="register-now">
+        <span
+          onClick={() => navigate("/register")}
+          className="text-purple-500 hover:underline cursor-pointer"
+        >
           Register now
         </span>
       </p>

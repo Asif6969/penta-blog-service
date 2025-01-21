@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* styles.css */
+body {
+  background: linear-gradient(
+    to right,
+    #ffe3e3,
+    #cce5ff
+  ); /* Gradient from pastel pink to pastel blue */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+}
