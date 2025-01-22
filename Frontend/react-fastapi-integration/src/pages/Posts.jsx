@@ -220,6 +220,14 @@ const Posts = () => {
     }
   };
 
+  const handleInputChange = (e) => {
+    setCategoryId(e.target.value);
+  };
+
+  const handleFetchClick = () => {
+    fetchPostsByCategory();
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
@@ -318,7 +326,7 @@ const Posts = () => {
               <div className="bg-gray-50 p-4 rounded shadow-sm">
                 <h3 className="text-lg font-bold">{post.title}</h3>
                 <p className="text-sm">
-                  <strong>Author:</strong> {post.user_id}
+                  <strong>Author ID:</strong> {post.user_id}
                 </p>
                 <p className="text-sm">
                   <strong>Category:</strong> {post.category_id}
@@ -359,6 +367,66 @@ const Posts = () => {
           </div>
           {responseMessage && (
             <p className="text-green-500">{responseMessage}</p>
+          )}
+        </div>
+        {/*Fetch Post By Category ID*/}
+        <div className="p-6 bg-white rounded-lg shadow-md max-w-xl mx-auto">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">
+            Fetch Posts by Category
+          </h2>
+          <div className="flex items-center space-x-4 mb-4">
+            <input
+              type="text"
+              value={categoryId}
+              onChange={handleInputChange}
+              placeholder="Enter category ID"
+              className="flex-grow p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+              onClick={handleFetchClick}
+              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+            >
+              Fetch Posts
+            </button>
+          </div>
+          {loading ? (
+            <p className="text-gray-500">Loading...</p>
+          ) : error ? (
+            <p className="text-red-500">{error}</p>
+          ) : posts.length > 0 ? (
+            <div className="max-h-80 overflow-y-auto">
+              <ul className="space-y-4">
+                {posts.map((post) => (
+                  <li
+                    key={post.id}
+                    className="p-4 bg-red-50 rounded-lg shadow hover:shadow-lg transition"
+                  >
+                    <h3 className="text-lg font-bold text-gray-900">
+                      {post.title}
+                    </h3>
+                    <p className="text-sm text-gray-600 mb-2">
+                      <strong>User ID:</strong> {post.user_id}
+                    </p>
+                    <p className="text-sm text-gray-600 mb-2">
+                      <strong>Category ID:</strong> {post.category_id}
+                    </p>
+                    <p className="text-gray-700 mb-4">{post.content}</p>
+                    <p className="text-xs text-gray-500">
+                      <strong>Created At:</strong>{" "}
+                      {new Date(post.created_at).toLocaleString()}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      <strong>Updated At:</strong>{" "}
+                      {new Date(post.updated_at).toLocaleString()}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : (
+            <p className="text-gray-600">
+              No posts available in this category.
+            </p>
           )}
         </div>
 
@@ -417,6 +485,57 @@ const Posts = () => {
           </button>
           {responseMessage && (
             <p className="text-green-500">{responseMessage}</p>
+          )}
+        </div>
+      </div>
+      <div className="p-6 bg-white rounded-lg shadow-md max-w-xl mx-auto mt-4">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">
+          Update Post
+        </h2>
+        <div className="space-y-4">
+          <input
+            type="text"
+            value={postId}
+            onChange={(e) => setPostId(e.target.value)}
+            placeholder="Enter Post ID"
+            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Enter New Title (optional)"
+            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="Enter New Content (optional)"
+            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <input
+            type="text"
+            value={categoryId}
+            onChange={(e) => setCategoryId(e.target.value)}
+            placeholder="Enter New Category ID (optional)"
+            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button
+            onClick={updatePost}
+            className="w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+          >
+            Update Post
+          </button>
+          {responseMessage && (
+            <p
+              className={`mt-4 text-center ${
+                responseMessage.includes("successfully")
+                  ? "text-green-500"
+                  : "text-red-500"
+              }`}
+            >
+              {responseMessage}
+            </p>
           )}
         </div>
       </div>
