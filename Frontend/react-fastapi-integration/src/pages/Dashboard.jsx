@@ -188,7 +188,7 @@ const Dashboard = () => {
   };
 
   const handleNavigateToPosts = () => {
-    navigate("/posts"); // Navigate to the /posts page
+    navigate("/"); // Navigate to the /posts page
   };
 
   const goToRolePage = () => {

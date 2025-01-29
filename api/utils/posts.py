@@ -125,7 +125,12 @@ async def restore_post(db, user_id: int):
 
 # (7)Get post sorted by Category
 async def get_posts_by_category(db: AsyncSession, category_id: int, skip: int = 0, limit: int = 100):
-    query = select(Post).where(Post.category_id == category_id, Post.is_deleted == False).offset(skip).limit(limit)
+    if category_id is None:  # If category_id is None, get all posts
+        # Fetch all active posts
+        query = select(Post).where(Post.is_deleted == False).offset(skip).limit(limit)
+    else:  # Fetch posts based on category_id
+        query = select(Post).where(Post.category_id == category_id, Post.is_deleted == False).offset(skip).limit(limit)
+    
     result = await db.execute(query)
     return result.scalars().all()
 
